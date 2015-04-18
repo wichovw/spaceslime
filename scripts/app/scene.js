@@ -19,7 +19,6 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   var fog =  new THREE.Fog( 0x16171c, 1, opts.far);
   scene.fog = fog;
 
-  // #6c7589 
   //Set up lights
   var lights = {
     ambient: new THREE.AmbientLight(0x21283b),
@@ -41,14 +40,8 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   // add a light in sky
   lights.hemisphere.position.set(0, 500, 500);
   scene.add(lights.hemisphere);
-  
-  //Set up ground
-  var material = new THREE.MeshPhongMaterial({color: 0x00ff00, side: THREE.DoubleSide});
-  var geometry = new THREE.PlaneBufferGeometry(opts.far, opts.far);
-  var plane = new THREE.Mesh( geometry, material );
-  plane.rotation.x = -Math.PI/2;
-//  scene.add( plane );
 
+  //Set up court
   var material = new THREE.MeshPhongMaterial({color: 0xffffff});
   var geometry = new THREE.PlaneBufferGeometry(opts.court.wide, opts.court.long*2);
   var line = new THREE.Mesh( geometry, material );
@@ -56,6 +49,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   line.position.y = 0.5;
   scene.add( line );
 
+  //Set up fields
   var material = new THREE.MeshPhongMaterial({color: 0x0000ff});
   var geometry = new THREE.PlaneBufferGeometry(opts.court.wide - 2*opts.court.line, opts.court.long - 1.5*opts.court.line);
   var cancha1 = new THREE.Mesh( geometry, material );
@@ -69,6 +63,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   scene.add( cancha1 );
   scene.add( cancha2 );
 
+  //Set up slimes
   var material = new THREE.MeshPhongMaterial({color: 0xffff00, side: THREE.DoubleSide});
   var geometry = new THREE.SphereGeometry(150, 15, 15, 0, Math.PI, 0, Math.PI);
   var slime1 = new THREE.Mesh( geometry, material );
@@ -81,6 +76,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   scene.add( slime2 );
   
   //Create particles ball
+  //From: https://stemkoski.github.io/Three.js/#particles
   var particleTexture = THREE.ImageUtils.loadTexture( 'images/spark.png' );
   var ball = new THREE.Object3D();
   var particleAttributes = { startSize: [], startPosition: [], randomness: [] };
@@ -92,10 +88,6 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
       var sprite = new THREE.Sprite( spriteMaterial );
       sprite.scale.set( 32, 32, 1.0 ); // imageWidth, imageHeight
       sprite.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
-      // for a cube:
-      // sprite.position.multiplyScalar( radiusRange );
-      // for a solid sphere:
-//       sprite.position.setLength( radiusRange * Math.random() );
       // for a spherical shell:
       sprite.position.setLength( radiusRange * (Math.random() * 0.1 + 0.9) );
 
@@ -138,15 +130,9 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
 	}
   }
   
-  //Set up the sky
-//  geometry = new THREE.SphereGeometry(opts.far/2);
-//  material = new THREE.MeshPhongMaterial({color: 0xB8EEFF} );
-//  var sky = new THREE.Mesh( geometry, material );
-//	sky.material.side = THREE.DoubleSide;
-//  scene.add( sky );
-
+  //Set up the sky box
   var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );	
-
+  //For each cube side
   var materialArray = [];
   for (var i = 0; i < 6; i++)
       materialArray.push( new THREE.MeshLambertMaterial({
