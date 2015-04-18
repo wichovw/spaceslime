@@ -9,9 +9,6 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
   var vars = {
     gravity : -1,
     friction : 1,
-    slime_r2 : Math.pow(150, 2),
-    ball_r2 : Math.pow(50, 2),
-    collide : this.slime_r2 + this.ball_r2,
     force_factor : 0.2,
     ball: {
       x: 600,
@@ -29,8 +26,19 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
     slime2: {
       x: -600,
       y: 0
+    },
+    calcs: {
+      s1_max_x: opts.court.long - opts.slimes_radius,
+      s1_min_x: opts.court.line/2 + opts.slimes_radius,
+      ball_max_x: opts.court.long - opts.ball_radius,
+      ball_min_x: opts.court.line/2 + opts.ball_radius,
+      net_height: opts.court.net + opts.ball_radius,
+      slime_r2: Math.pow(opts.slimes_radius, 2),
+      ball_r2: Math.pow(opts.ball_radius, 2),
+      collide_d2: 0
     }
   }
+  vars.calcs.collide_d2 = vars.calcs.ball_r2 + vars.calcs.slime_r2;
   console.log(vars);
   
 //  setInterval(function () {

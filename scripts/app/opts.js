@@ -12,6 +12,8 @@ define({
     net: 250,
     walls: 1000
   },
+  slimes_radius: 150,
+  ball_radius: 50,
   // web socket
   socketurl: 'ws://localhost:9999/ws'
 });
