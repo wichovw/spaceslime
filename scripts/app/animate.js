@@ -4,7 +4,7 @@ define(['./scene', './physics'], function (scene, physics) {
     requestAnimationFrame(animate);
     //Do frame rendering
     scene.renderer.render(scene.scene, scene.camera);
-    physics.toDoEachFrame(scene.ball, scene.slime2);
+    physics.toDoEachFrame(scene.ball, scene.slime2, scene.slime1);
 //    scene.controls.update();
   }
   return {"animate" : animate(), "renderer" : scene.renderer};

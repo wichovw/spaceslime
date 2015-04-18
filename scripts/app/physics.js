@@ -6,10 +6,15 @@ define(['./variables'], function (vars) {
       vars.ball.y += vars.ball.y_vel;
       vars.ball.y_vel += vars.gravity;
     },
-    changeSlimesPosition: function changeSlimesPosition() {
+    changeSlimePosition: function changeSlimePosition() {
       vars.slime1.x += vars.slime1.x_vel;
       vars.slime1.y += vars.slime1.y_vel;
-      vars.slime1.y_vel = vars.slime1.y > 0 ? vars.slime1.y_vel + vars.gravity : 0;
+      if (vars.slime1.y > 0) vars.slime1.y_vel += vars.gravity;
+      else {
+        vars.slime1.y_vel = 0;
+        vars.slime1.y = 0;
+        if (Math.abs(vars.slime1.x_vel) > 0) vars.slime1.x_vel -= vars.friction * vars.slime1.dir;
+      }
     },
     detectCollision: function detectCollision() {
       var d1 = Math.pow(vars.ball.x - vars.slime1.x, 2) + Math.pow(vars.ball.y - vars.slime1.y, 2);
@@ -18,17 +23,17 @@ define(['./variables'], function (vars) {
         vars.ball.y_vel = (vars.ball.y - vars.slime1.y + vars.slime1.y_vel) * vars.force_factor;
       }
     },
-    renderBallAndSlimes: function renderBallAndSlimes(ball, slime2) {
-      ball.position.z = vars.ball.x;
-      ball.position.y = vars.ball.y;
-      slime2.position.z = vars.slime1.x;
-      slime2.position.y = vars.slime1.y;
+    renderObject: function renderObject(obj, logical) {
+      obj.position.z = logical.x;
+      obj.position.y = logical.y;
     },
-    toDoEachFrame: function toDoEachFrame(ball, slime2) {
+    toDoEachFrame: function toDoEachFrame(ball, slime1, slime2) {
       this.detectCollision();
       this.changeBallPosition();
-      this.changeSlimesPosition();
-      this.renderBallAndSlimes(ball, slime2);
+      this.changeSlimePosition();
+      this.renderObject(ball, vars.ball);
+      this.renderObject(slime1, vars.slime1);
+      this.renderObject(slime2, vars.slime2);
     }
   };
 });

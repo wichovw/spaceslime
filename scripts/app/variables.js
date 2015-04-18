@@ -8,7 +8,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
   
   var vars = {
     gravity : -1,
-    friction : -1,
+    friction : 1,
     slime_r2 : Math.pow(150, 2),
     ball_r2 : Math.pow(50, 2),
     collide : this.slime_r2 + this.ball_r2,
@@ -23,7 +23,12 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       x: 600,
       y: 0,
       x_vel: 0,
-      y_vel: 0
+      y_vel: 0,
+      dir: 0
+    },
+    slime2: {
+      x: -600,
+      y: 0
     }
   }
   console.log(vars);

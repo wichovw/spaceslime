@@ -1,15 +1,18 @@
 define(['./animate', './variables', 'jquery'], function (animation, vars, $) {
   //Set basic event
-  $(document.documentElement).keyup(function(e) {
-    if (e.keyCode === 65) { // A
-      vars.slime1.x_vel += 10;
+  $(document.documentElement).keydown(function(e) {
+    if (e.keyCode === 37) { 
+      vars.slime1.x_vel += vars.slime1.x_vel <= 20 ? 10 : 0;
     }
-    else if (e.keyCode === 68) { // D
-      vars.slime1.x_vel -= 10;
+    else if (e.keyCode === 39) { 
+      vars.slime1.x_vel -= vars.slime1.x_vel >= -20 ? 10 : 0;
     }
-    else if (e.keyCode === 87) { // W
-      vars.slime1.y_vel += 10;
+    else if (e.keyCode === 38) { 
+      vars.slime1.y_vel += 20;
     }
+    else return;
+    vars.slime1.dir = vars.slime1.x_vel >= 0 ? 1 : -1;
+    e.preventDefault();
   });
   
   //Run animate

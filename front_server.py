@@ -2,7 +2,7 @@ import os
 import cherrypy
 
 PATH = os.path.abspath(os.path.dirname(__file__))
-print PATH
+print(PATH)
 
 class Root(object): pass
 
