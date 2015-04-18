@@ -68,9 +68,15 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   cancha2.position.z = (opts.court.long - opts.court.line*1.5)/2 + opts.court.line/2;
   scene.add( cancha1 );
   scene.add( cancha2 );
+  
+  var material = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
+  var geometry = new THREE.BoxGeometry(opts.court.wide, opts.court.net, opts.court.line);
+  var net = new THREE.Mesh(geometry, material);
+  net.position.y = opts.court.net/2;
+  scene.add(net);
 
   var material = new THREE.MeshPhongMaterial({color: 0xffff00, side: THREE.DoubleSide});
-  var geometry = new THREE.SphereGeometry(150, 15, 15, 0, Math.PI, 0, Math.PI);
+  var geometry = new THREE.SphereGeometry(opts.slimes_radius, 15, 15, 0, Math.PI, 0, Math.PI);
   var slime1 = new THREE.Mesh( geometry, material );
   var slime2 = new THREE.Mesh( geometry, material );
   slime1.position.z = -600;
@@ -85,7 +91,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   var ball = new THREE.Object3D();
   var particleAttributes = { startSize: [], startPosition: [], randomness: [] };
   var totalParticles = 200;
-  var radiusRange = 50;
+  var radiusRange = opts.ball_radius;
   for( var i = 0; i < totalParticles; i++ ) {
       var spriteMaterial = new THREE.SpriteMaterial( { map: particleTexture, useScreenCoordinates: false, color: 0xffffff } );
 
