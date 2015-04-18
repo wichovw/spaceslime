@@ -15,5 +15,12 @@ define({
   slimes_radius: 150,
   ball_radius: 50,
   // web socket
-  socketurl: 'ws://localhost:9999/ws'
+  socketurl: 'ws://localhost:9999/ws',
+  skybox: {
+    prefix: "images/mainframe_",
+    extension: ".jpg",
+    directions: ["ft", "bk", "up", "dn", "rt", "lf"]
+    // ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+  }
+  
 });
