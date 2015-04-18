@@ -9,9 +9,11 @@ define({
     long: 1300,
     wide: 1200,
     line: 50,
-    net: 250,
-    walls: 1000
+    net: 250
   },
+  slimes_radius: 150,
+  ball_radius: 50,
+  slime_max_jump: 400,
   // web socket
   socketurl: 'ws://localhost:9999/ws',
   skybox: {
