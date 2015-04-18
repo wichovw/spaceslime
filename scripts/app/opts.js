@@ -13,5 +13,12 @@ define({
     walls: 1000
   },
   // web socket
-  socketurl: 'ws://localhost:9999/ws'
+  socketurl: 'ws://localhost:9999/ws',
+  skybox: {
+    prefix: "images/mainframe_",
+    extension: ".jpg",
+    directions: ["ft", "bk", "up", "dn", "rt", "lf"]
+    // ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+  }
+  
 });

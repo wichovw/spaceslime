@@ -1,5 +1,6 @@
 define(["OrbitControls", "./opts"], function(THREE, opts){
   var scene, camera, renderer;
+  var clock = new THREE.Clock();
   //Set up scene
   scene = new THREE.Scene();
   
@@ -15,16 +16,16 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   scene.add(camera);
   
   //Set up fog
-  var fog =  new THREE.Fog( 0xd0eaff, 1, opts.far*.70);
+  var fog =  new THREE.Fog( 0x16171c, 1, opts.far);
   scene.fog = fog;
 
-  
+  // #6c7589 
   //Set up lights
   var lights = {
-    ambient: new THREE.AmbientLight(0x020202),
-    front: new THREE.DirectionalLight('white', 0.3),
-    back: new THREE.DirectionalLight('white', 0.2),
-    hemisphere: new THREE.HemisphereLight(0xE3F4FF, 0xBCE1F9, 1.001)
+    ambient: new THREE.AmbientLight(0x21283b),
+    front: new THREE.DirectionalLight(0x2a2c33, 0.5),
+    back: new THREE.DirectionalLight(0x2a2c33, 0.7),
+    hemisphere: new THREE.HemisphereLight(0xaea9b9, 0x6c7589, 1.001)
   }
   //Add ambient
   scene.add(lights.ambient);
@@ -46,7 +47,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   var geometry = new THREE.PlaneBufferGeometry(opts.far, opts.far);
   var plane = new THREE.Mesh( geometry, material );
   plane.rotation.x = -Math.PI/2;
-  scene.add( plane );
+//  scene.add( plane );
 
   var material = new THREE.MeshPhongMaterial({color: 0xffffff});
   var geometry = new THREE.PlaneBufferGeometry(opts.court.wide, opts.court.long*2);
@@ -79,21 +80,84 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   scene.add( slime1 );
   scene.add( slime2 );
   
-  var material = new THREE.MeshPhongMaterial({color: 0xffaa00});
-  var geometry = new THREE.SphereGeometry(50, 10, 10);
-  var ball = new THREE.Mesh(geometry, material);
+  //Create particles ball
+  var particleTexture = THREE.ImageUtils.loadTexture( 'images/spark.png' );
+  var ball = new THREE.Object3D();
+  var particleAttributes = { startSize: [], startPosition: [], randomness: [] };
+  var totalParticles = 200;
+  var radiusRange = 50;
+  for( var i = 0; i < totalParticles; i++ ) {
+      var spriteMaterial = new THREE.SpriteMaterial( { map: particleTexture, useScreenCoordinates: false, color: 0xffffff } );
+
+      var sprite = new THREE.Sprite( spriteMaterial );
+      sprite.scale.set( 32, 32, 1.0 ); // imageWidth, imageHeight
+      sprite.position.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
+      // for a cube:
+      // sprite.position.multiplyScalar( radiusRange );
+      // for a solid sphere:
+//       sprite.position.setLength( radiusRange * Math.random() );
+      // for a spherical shell:
+      sprite.position.setLength( radiusRange * (Math.random() * 0.1 + 0.9) );
+
+      // sprite.color.setRGB( Math.random(),  Math.random(),  Math.random() ); 
+      sprite.material.color.setHSL( Math.random(), 0.9, 0.7 ); 
+
+      // sprite.opacity = 0.80; // translucent particles
+      sprite.material.blending = THREE.AdditiveBlending; // "glowing" particles
+
+      ball.add( sprite );
+      // add variable qualities to arrays, if they need to be accessed later
+      particleAttributes.startPosition.push( sprite.position.clone() );
+      particleAttributes.randomness.push( Math.random() );
+  }
   ball.position.z = 600;
   ball.position.y = 800;
   scene.add(ball);
   
+  //Function to animate ball particles
+  function animateBallParticles(){
+    var time = 4 * clock.getElapsedTime();
+	
+	for ( var c = 0; c < ball.children.length; c ++ ) 
+	{
+		var sprite = ball.children[ c ];
+
+		// particle wiggle
+		// var wiggleScale = 2;
+		// sprite.position.x += wiggleScale * (Math.random() - 0.5);
+		// sprite.position.y += wiggleScale * (Math.random() - 0.5);
+		// sprite.position.z += wiggleScale * (Math.random() - 0.5);
+		
+		// pulse away/towards center
+		// individual rates of movement
+		var a = particleAttributes.randomness[c] + 1;
+		var pulseFactor = Math.sin(a * time) * 0.1 + 0.9;
+		sprite.position.x = particleAttributes.startPosition[c].x * pulseFactor;
+		sprite.position.y = particleAttributes.startPosition[c].y * pulseFactor;
+		sprite.position.z = particleAttributes.startPosition[c].z * pulseFactor;	
+	}
+  }
+  
   //Set up the sky
-  geometry = new THREE.SphereGeometry (opts.far/2);
-  material = new THREE.MeshPhongMaterial({color: 0xB8EEFF} );
-  var sky = new THREE.Mesh( geometry, material );
-	sky.material.side = THREE.DoubleSide;
-  scene.add( sky );
+//  geometry = new THREE.SphereGeometry(opts.far/2);
+//  material = new THREE.MeshPhongMaterial({color: 0xB8EEFF} );
+//  var sky = new THREE.Mesh( geometry, material );
+//	sky.material.side = THREE.DoubleSide;
+//  scene.add( sky );
+
+  var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );	
+
+  var materialArray = [];
+  for (var i = 0; i < 6; i++)
+      materialArray.push( new THREE.MeshLambertMaterial({
+          map: THREE.ImageUtils.loadTexture( opts.skybox.prefix + opts.skybox.directions[i] + opts.skybox.extension ),
+          side: THREE.BackSide
+      }));
+  var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+  var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+  scene.add( skyBox );
     
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
   
-  return {"renderer": renderer, "camera" : camera, "scene" : scene, "controls" : controls, "slime1" : slime1, "slime2" : slime2, "ball" : ball};
+  return {"renderer": renderer, "camera" : camera, "scene" : scene, "controls" : controls, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox};
 });

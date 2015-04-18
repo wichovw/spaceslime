@@ -16,7 +16,7 @@ define(['./animate', './variables', 'jquery'], function (animation, vars, $) {
   });
   
   //Run animate
-  animation.animate;
+  animation.animate();
   
   //Insert into body
   document.body.appendChild( animation.renderer.domElement);
