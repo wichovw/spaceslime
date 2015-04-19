@@ -1,9 +1,10 @@
-define(["OrbitControls", "./opts"], function(THREE, opts){
+define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materials){
   var scene, camera, renderer;
   var clock = new THREE.Clock();
   //Set up scene
   scene = new THREE.Scene();
   
+
   //Set up renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -70,16 +71,38 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
   scene.add(net);
 
   //Set up slimes
-  var material = new THREE.MeshPhongMaterial({color: 0xffff00, side: THREE.DoubleSide});
   var geometry = new THREE.SphereGeometry(opts.slimes_radius, 15, 15, 0, Math.PI, 0, Math.PI);
-  var slime1 = new THREE.Mesh( geometry, material );
-  var slime2 = new THREE.Mesh( geometry, material );
+  var slime1 = new THREE.Mesh( geometry, materials.lavaMaterial );
+  var slime2 = new THREE.Mesh( geometry, materials.lavaMaterial );
   slime1.position.z = -600;
   slime2.position.z = 600;
   slime1.rotation.x = -Math.PI/2;
   slime2.rotation.x = -Math.PI/2;
   scene.add( slime1 );
   scene.add( slime2 );
+  
+  //Slime downs
+  var cylinderGeom = new THREE.CylinderGeometry(opts.slimes_radius*0.9, opts.slimes_radius+20, 15);
+  var sillyMetal = new THREE.MeshPhongMaterial( {color: 0xffffff} );
+  var slimeDown = new THREE.Mesh( cylinderGeom, sillyMetal);
+  slimeDown.rotation.x = -Math.PI/2;
+  slimeDown.position.set(0, 0, -13);
+  slime2.add(slimeDown);
+  
+	
+	
+  
+  //Sphere for eyes
+//  var sphereGeom =  new THREE.SphereGeometry(30, 32, 16 ); // radius, segmentsWidth, segmentsHeight
+//	mirrorSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
+//	// mirrorCubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+//	scene.add( mirrorSphereCamera );
+//	var mirrorSphereMaterial = new THREE.MeshPhongMaterial( { emissive: 0xfff, envMap: mirrorSphereCamera.renderTarget } );
+//	mirrorSphere = new THREE.Mesh( sphereGeom, mirrorSphereMaterial );
+//	mirrorSphere.position.set(100,100,100);
+//	mirrorSphereCamera.position = mirrorSphere.position;
+//	slime1.add(mirrorSphere);
+  
   
   //Create particles ball
   //From: https://stemkoski.github.io/Three.js/#particles
@@ -134,6 +157,7 @@ define(["OrbitControls", "./opts"], function(THREE, opts){
 		sprite.position.y = particleAttributes.startPosition[c].y * pulseFactor;
 		sprite.position.z = particleAttributes.startPosition[c].z * pulseFactor;	
 	}
+    materials.updateLava();
   }
   
   //Set up the sky box
