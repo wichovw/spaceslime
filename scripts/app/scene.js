@@ -61,14 +61,7 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   };
   PrismGeometry.prototype = Object.create(THREE.ExtrudeGeometry.prototype);
 
-  //Set up court
-  var geometry = new THREE.PlaneBufferGeometry(opts.court.wide, opts.court.long*2);
-//  var geometry = new THREE.CylinderGeometry(opts.court.long, opts.court.long, 20, 32 );
-  var court = new THREE.Mesh(geometry, materials.invisibleMaterial);
-  court.rotation.x = -Math.PI/2;
-  court.position.y = 0.5;
-  scene.add( court );
-			   
+  //Make prism for player areas 
   var geometry = new PrismGeometry( [
     new THREE.Vector2(0, opts.court.long/3),
     new THREE.Vector2(0, 2*opts.court.long/3),
@@ -79,14 +72,15 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
     new THREE.Vector2(2*opts.court.long/3, 0),
     new THREE.Vector2(opts.court.long/3, 0),
   ], opts.infiniteTall);
+    
   //Player Area 1
   var area1 = new THREE.Mesh(geometry, materials.circuitMaterial);
-  area1.position.set(-opts.court.long/2, -opts.infiniteTall, -80);
+  area1.position.set(-opts.court.long/2, -opts.infiniteTall-20, -80);
   area1.rotation.x = -Math.PI / 2;
   scene.add( area1 );
   //Player Area 2
   var area2 = new THREE.Mesh(geometry, materials.circuitMaterial);
-  area2.position.set(-opts.court.long/2, -opts.infiniteTall, opts.court.long+80);
+  area2.position.set(-opts.court.long/2, -opts.infiniteTall-20, opts.court.long+80);
   area2.rotation.x = -Math.PI / 2;
   scene.add( area2 );
 
@@ -107,32 +101,18 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   scene.add( slime1 );
   scene.add( slime2 );
   
-  //Slime downs
+  //Add Slime bottom parts
   var cylinderGeom = new THREE.CylinderGeometry(opts.slimes_radius*0.9, opts.slimes_radius+20, 15);
-  var sillyMetal = new THREE.MeshPhongMaterial( {color: 0xffffff} );
-  var slimeDown1 = new THREE.Mesh( cylinderGeom, sillyMetal);
-  var slimeDown2 = new THREE.Mesh( cylinderGeom, sillyMetal);
+    
+  var slimeDown1 = new THREE.Mesh( cylinderGeom, materials.circuitMaterial);
   slimeDown1.rotation.x = -Math.PI/2;
   slimeDown1.position.set(0, 0, -13);
-  slimeDown2.rotation.x = -Math.PI/2;
-  slimeDown2.position.set(0, 0, -13);
-    
-  slime2.add(slimeDown2);
   slime1.add(slimeDown1);
   
-	
-	
-  
-  //Sphere for eyes
-//  var sphereGeom =  new THREE.SphereGeometry(30, 32, 16 ); // radius, segmentsWidth, segmentsHeight
-//	mirrorSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
-//	// mirrorCubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-//	scene.add( mirrorSphereCamera );
-//	var mirrorSphereMaterial = new THREE.MeshPhongMaterial( { emissive: 0xfff, envMap: mirrorSphereCamera.renderTarget } );
-//	mirrorSphere = new THREE.Mesh( sphereGeom, mirrorSphereMaterial );
-//	mirrorSphere.position.set(100,100,100);
-//	mirrorSphereCamera.position = mirrorSphere.position;
-//	slime1.add(mirrorSphere);
+  var slimeDown2 = new THREE.Mesh( cylinderGeom, materials.circuitMaterial);
+  slimeDown2.rotation.x = -Math.PI/2;
+  slimeDown2.position.set(0, 0, -13);   
+  slime2.add(slimeDown2);
   
   
   //Create particles ball
@@ -170,16 +150,8 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   function animateBallParticles(){
     var time = 4 * clock.getElapsedTime();
 	
-	for ( var c = 0; c < ball.children.length; c ++ ) 
-	{
+	for ( var c = 0; c < ball.children.length; c ++ )  {
 		var sprite = ball.children[ c ];
-
-		// particle wiggle
-		// var wiggleScale = 2;
-		// sprite.position.x += wiggleScale * (Math.random() - 0.5);
-		// sprite.position.y += wiggleScale * (Math.random() - 0.5);
-		// sprite.position.z += wiggleScale * (Math.random() - 0.5);
-		
 		// pulse away/towards center
 		// individual rates of movement
 		var a = particleAttributes.randomness[c] + 1;
@@ -204,7 +176,5 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
   scene.add( skyBox );
     
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
-  
-  return {"renderer": renderer, "camera" : camera, "scene" : scene, "controls" : controls, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox};
+  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox};
 });

@@ -48,8 +48,7 @@ define(['OrbitControls', './opts'], function(THREE, opts){
       time: 			{ type: "f", value: 1.0 }
   };
 
-  // create custom material from the shader code above
-  //   that is within specially labeled script tags
+  // create custom material from the shader
   var customMaterial = new THREE.ShaderMaterial( 
   {
       uniforms: customUniforms,
@@ -65,7 +64,7 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   
   //Build circuit material
   var circuitTexture	= THREE.ImageUtils.loadTexture(opts.circuitsURL);
-  var circuitMaterial = new THREE.MeshPhongMaterial( {color: 0xf8f8f8, map: circuitTexture, specular: 0x00ffff, shininess: 20 } );
+  var circuitMaterial = new THREE.MeshPhongMaterial( {color: 0xa2a2a2, map: circuitTexture, specular: 0x00ffff, shininess: 20 } );
   circuitTexture.wrapS = circuitTexture.wrapT = THREE.RepeatWrapping;
   circuitTexture.repeat.set(1, 1);
   
