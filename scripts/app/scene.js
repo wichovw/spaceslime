@@ -41,33 +41,59 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   // add a light in sky
   lights.hemisphere.position.set(0, 500, 500);
   scene.add(lights.hemisphere);
+  
+  //Create prisms 
+  PrismGeometry = function ( vertices, height ) {
+	var Shape = new THREE.Shape();
+	( function f( ctx ){
+	ctx.moveTo( vertices[0].x, vertices[0].y );
+	for (var i=1; i < vertices.length; i++)
+		{
+			ctx.lineTo( vertices[i].x, vertices[i].y );
+		}
+	ctx.lineTo( vertices[0].x, vertices[0].y );
+
+	} )(Shape);
+    var settings = {};
+    settings.amount = height;
+	settings.bevelEnabled = false;
+    THREE.ExtrudeGeometry.call(this, Shape, settings);
+  };
+  PrismGeometry.prototype = Object.create(THREE.ExtrudeGeometry.prototype);
 
   //Set up court
-  var material = new THREE.MeshPhongMaterial({color: 0xffffff});
   var geometry = new THREE.PlaneBufferGeometry(opts.court.wide, opts.court.long*2);
-  var line = new THREE.Mesh( geometry, material );
-  line.rotation.x = -Math.PI/2;
-  line.position.y = 0.5;
-  scene.add( line );
+//  var geometry = new THREE.CylinderGeometry(opts.court.long, opts.court.long, 20, 32 );
+  var court = new THREE.Mesh(geometry, materials.invisibleMaterial);
+  court.rotation.x = -Math.PI/2;
+  court.position.y = 0.5;
+  scene.add( court );
+			   
+  var geometry = new PrismGeometry( [
+    new THREE.Vector2(0, opts.court.long/3),
+    new THREE.Vector2(0, 2*opts.court.long/3),
+    new THREE.Vector2(opts.court.long/3, opts.court.long),
+    new THREE.Vector2(2*opts.court.long/3, opts.court.long),
+    new THREE.Vector2(opts.court.long, 2*opts.court.long/3),
+    new THREE.Vector2(opts.court.long, opts.court.long/3),
+    new THREE.Vector2(2*opts.court.long/3, 0),
+    new THREE.Vector2(opts.court.long/3, 0),
+  ], opts.infiniteTall);
+  //Player Area 1
+  var area1 = new THREE.Mesh(geometry, materials.circuitMaterial);
+  area1.position.set(-opts.court.long/2, -opts.infiniteTall, -80);
+  area1.rotation.x = -Math.PI / 2;
+  scene.add( area1 );
+  //Player Area 2
+  var area2 = new THREE.Mesh(geometry, materials.circuitMaterial);
+  area2.position.set(-opts.court.long/2, -opts.infiniteTall, opts.court.long+80);
+  area2.rotation.x = -Math.PI / 2;
+  scene.add( area2 );
 
-  //Set up fields
-  var material = new THREE.MeshPhongMaterial({color: 0x0000ff});
-  var geometry = new THREE.PlaneBufferGeometry(opts.court.wide - 2*opts.court.line, opts.court.long - 1.5*opts.court.line);
-  var cancha1 = new THREE.Mesh( geometry, material );
-  var cancha2 = new THREE.Mesh( geometry, material );
-  cancha1.rotation.x = -Math.PI/2;
-  cancha2.rotation.x = -Math.PI/2;
-  cancha1.position.y = 1;
-  cancha2.position.y = 1;
-  cancha1.position.z = -(opts.court.long - opts.court.line*1.5)/2 - opts.court.line/2;
-  cancha2.position.z = (opts.court.long - opts.court.line*1.5)/2 + opts.court.line/2;
-  scene.add( cancha1 );
-  scene.add( cancha2 );
-  
-  var material = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
-  var geometry = new THREE.BoxGeometry(opts.court.wide, opts.court.net, opts.court.line);
-  var net = new THREE.Mesh(geometry, material);
-  net.position.y = opts.court.net/2;
+  //Set up net
+  var geometry = new THREE.BoxGeometry(opts.court.wide, (opts.infiniteTall), opts.court.line);
+  var net = new THREE.Mesh(geometry, materials.glassMaterial);
+  net.position.y = -opts.infiniteTall + opts.court.net*2;
   scene.add(net);
 
   //Set up slimes
@@ -84,10 +110,15 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   //Slime downs
   var cylinderGeom = new THREE.CylinderGeometry(opts.slimes_radius*0.9, opts.slimes_radius+20, 15);
   var sillyMetal = new THREE.MeshPhongMaterial( {color: 0xffffff} );
-  var slimeDown = new THREE.Mesh( cylinderGeom, sillyMetal);
-  slimeDown.rotation.x = -Math.PI/2;
-  slimeDown.position.set(0, 0, -13);
-  slime2.add(slimeDown);
+  var slimeDown1 = new THREE.Mesh( cylinderGeom, sillyMetal);
+  var slimeDown2 = new THREE.Mesh( cylinderGeom, sillyMetal);
+  slimeDown1.rotation.x = -Math.PI/2;
+  slimeDown1.position.set(0, 0, -13);
+  slimeDown2.rotation.x = -Math.PI/2;
+  slimeDown2.position.set(0, 0, -13);
+    
+  slime2.add(slimeDown2);
+  slime1.add(slimeDown1);
   
 	
 	

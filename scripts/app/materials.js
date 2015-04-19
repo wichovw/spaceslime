@@ -1,5 +1,5 @@
-define(['OrbitControls', './variables'], function(THREE, opts){
-  //Materials
+define(['OrbitControls', './opts'], function(THREE, opts){
+  // Build Lava/Slime Material
   // base image texture for mesh
   var lavaTexture = new THREE.ImageUtils.loadTexture( 'images/lavag.jpg');
   lavaTexture.wrapS = lavaTexture.wrapT = THREE.RepeatWrapping; 
@@ -62,5 +62,18 @@ define(['OrbitControls', './variables'], function(THREE, opts){
     var delta = clock.getDelta();
 	customUniforms.time.value += delta;
   }
-  return {lavaMaterial:  customMaterial, updateLava: updateLava};
+  
+  //Build circuit material
+  var circuitTexture	= THREE.ImageUtils.loadTexture(opts.circuitsURL);
+  var circuitMaterial = new THREE.MeshPhongMaterial( {color: 0xf8f8f8, map: circuitTexture, specular: 0x00ffff, shininess: 20 } );
+  circuitTexture.wrapS = circuitTexture.wrapT = THREE.RepeatWrapping;
+  circuitTexture.repeat.set(1, 1);
+  
+  //Invisible material
+  var invisibleMaterial = new THREE.MeshPhongMaterial({color: 0xfff, transparent: true, opacity: 0.0});
+  
+  //Glass material
+  var glassMaterial = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
+  
+  return {lavaMaterial:  customMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial};
 });

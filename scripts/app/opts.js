@@ -8,7 +8,7 @@ define({
   court: {
     long: 1300,
     wide: 1200,
-    line: 50,
+    line: 30,
     net: 250
   },
   slimes_radius: 150,
@@ -21,6 +21,8 @@ define({
     extension: ".jpg",
     directions: ["ft", "bk", "up", "dn", "rt", "lf"]
     // ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-  }
+  },
+  circuitsURL: "images/circuits.jpg",
+  infiniteTall: 600
   
 });
