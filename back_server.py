@@ -2,22 +2,26 @@ import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import json
 
 
 
 class ActionHandler(tornado.websocket.WebSocketHandler): 
+	def open(self):
+		print ('user is connected.\n')
+
 	"""
 	Types of action:
 		0. Move Horizontally
 		1. Move Vertically
 	"""
-	def open(self):
-		print ('user is connected.\n')
-
 	def on_message(self, message):
-		print(message[0])
-		print ('received message: %s\n' %message)
-		self.write_message(message + ' OK')
+		msg = json.loads(message)
+		if(msg['type']==0):
+			print ('Hotizontal: %s\n' %msg['data'])
+		elif(msg['type']==1):
+			print ('Vertical: %s\n' %msg['data'])
+		
 
 	def on_close(self):
 		print ('connection closed\n')
