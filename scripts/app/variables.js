@@ -37,48 +37,36 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       ball_r2: Math.pow(opts.ball_radius, 2),
       collide_d2: 0
     }
+		
   }
   vars.calcs.collide_d2 = vars.calcs.ball_r2 + vars.calcs.slime_r2;
   console.log(vars);
-  
+	
+  vars.socket = new WebSocket(opts.socketurl);
+	vars.socket.onopen = function(evt) {
+      alert("Connection status: Connected!")
+    };
+    vars.socket.onmessage = function(evt) {
+      
+      alert( "Server: " + evt.data);
+      
+    };
+    vars.socket.onclose = function(evt) {
+      alert ("Connection closed");
+    };
+	 vars.socket.onerror = function() {
+		 console.log('socket error');
+	 }
+	 
+	 vars.socket.onsend = function(evt) {
+			 console.log('socket send');
+			 console.log(evt);
+	 }
 //  setInterval(function () {
 //    
 //  }, 3000);
   
-//  var socket = new WebSocket(opts.socketurl);
-//
-//  // On Message Receive
-//  socket.onmessage = function(evt) {
-//      console.log('socket receive');
-//      console.log(evt.data);
-//      alert("FUCK");
-//  }
-//
-//  // On Socket Close
-//  socket.onclose = function() {
-//      console.log('socket closed');
-//    alert("DAMN!");
-//  }
-//
-//  // On Error
-//  socket.onerror = function() {
-//      console.log('socket error');
-//  }
-//
-//  // On Connection Establish
-//  socket.onopen = function(evt) {
-//      console.log('socket open');
-//      alert("FUQ!");
-//      // Send a Message!
-//      socket.send('hello world!');
-//  }
-//
-//  // On Send Complete
-//  socket.onsend = function(evt) {
-//      console.log('socket send');
-//      console.log(evt);
-//  }
-  
+
   
   return vars;
 });
