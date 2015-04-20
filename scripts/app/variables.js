@@ -44,7 +44,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 	
   vars.socket = new WebSocket(opts.socketurl);
 	vars.socket.onopen = function(evt) {
-      alert("Connection status: Connected!")
+      // alert("Connection status: Connected!")
     };
     vars.socket.onmessage = function(evt) {
       

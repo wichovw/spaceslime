@@ -5,10 +5,22 @@ import tornado.web
 import json
 
 
+players = []
+
+class player():
+	def __init__(self):
+		self.x = 30
+		self.y = 0
+	
+		
+
 
 class ActionHandler(tornado.websocket.WebSocketHandler): 
 	def open(self):
 		print ('user is connected.\n')
+		self.player = player()
+		players.append(self)
+		
 
 	"""
 	Types of action:
@@ -19,12 +31,19 @@ class ActionHandler(tornado.websocket.WebSocketHandler):
 		msg = json.loads(message)
 		if(msg['type']==0):
 			print ('Hotizontal: %s\n' %msg['data'])
+			self.player.x+=msg['data']
 		elif(msg['type']==1):
 			print ('Vertical: %s\n' %msg['data'])
-		
+			self.player.y+=msg['data']
+			
+		#send to opponent
+		for p in players:
+			if p != self:
+				p.write_message(message)
 
 	def on_close(self):
 		print ('connection closed\n')
+		players.remove(self)
 		
 	def check_origin(self, origin):
 		return True
