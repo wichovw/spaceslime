@@ -38,12 +38,25 @@ define(['./variables', './opts'], function (vars, opts) {
       }
       if (vars.ball.y <= opts.ball_radius){ 
 				vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
-				if(vars.ball.x<0)
-					vars.slime1.score++;
-				else
-					vars.slime2.score++;
+				if(vars.ball.x<0){
+					if(vars.slime2.shield>0)//if has powerup shield
+						vars.slime2.shield--;
+					else{
+						vars.slime1.score++;
+						resetGame();
+					}
+				}
+				else{
+					if(vars.slime1.shield>0)//if has powerup shield
+						vars.slime1.shield--;
+					else{
+						vars.slime2.score++;
+						resetGame();
+					}
+				}
+					
 				// alert(vars.slime1.score+"-"+vars.slime2.score);
-				resetGame();
+				
 			}
     },
     renderObject: function renderObject(obj, logical) {
