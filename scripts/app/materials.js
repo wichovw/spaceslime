@@ -67,6 +67,8 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   var circuitMaterial = new THREE.MeshPhongMaterial( {color: 0xa2a2a2, map: circuitTexture, specular: 0x00ffff, shininess: 20 } );
   circuitTexture.wrapS = circuitTexture.wrapT = THREE.RepeatWrapping;
   circuitTexture.repeat.set(1, 1);
+  //Shiny circuit material
+  var shinyMaterial = new THREE.MeshPhongMaterial( {color: 0xcbc5a6, map: circuitTexture, specular: 0xffa700, shininess: 50 } );
   
   //Invisible material
   var invisibleMaterial = new THREE.MeshPhongMaterial({color: 0xfff, transparent: true, opacity: 0.0});
@@ -74,5 +76,5 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   //Glass material
   var glassMaterial = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
   
-  return {lavaMaterial:  customMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial};
+  return {lavaMaterial:  customMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial, shinyMaterial: shinyMaterial};
 });

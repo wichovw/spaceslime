@@ -1,6 +1,5 @@
-define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materials){
-  var scene, camera, renderer;
-  var clock = new THREE.Clock();
+define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE, opts, materials, figs) {
+  var scene, camera, renderer, clock = new THREE.Clock();
   //Set up scene
   scene = new THREE.Scene();
   
@@ -11,13 +10,13 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   renderer.setSize(opts.swidth, opts.sheight);
   
   //Set up camera
-  camera = new THREE.PerspectiveCamera(45, (opts.swidth / opts.sheight), opts.near, opts.far*1.5);
+  camera = new THREE.PerspectiveCamera(45, (opts.swidth / opts.sheight), opts.near, opts.far * 1.5);
   camera.position.set(2500, 500, 0);
-  camera.rotation.set(0, Math.PI/2, 0);
+  camera.rotation.set(0, Math.PI / 2, 0);
   scene.add(camera);
   
   //Set up fog
-  var fog =  new THREE.Fog( 0x16171c, 1, opts.far);
+  var fog =  new THREE.Fog(0x16171c, 1, opts.far);
   scene.fog = fog;
 
   //Set up lights
@@ -26,7 +25,7 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
     front: new THREE.DirectionalLight(0x2a2c33, 0.5),
     back: new THREE.DirectionalLight(0x2a2c33, 0.7),
     hemisphere: new THREE.HemisphereLight(0xaea9b9, 0x6c7589, 1.001)
-  }
+  };
   //Add ambient
   scene.add(lights.ambient);
   
@@ -35,51 +34,35 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
   scene.add(lights.front);
   
   // add a light back
-  lights.back.position.set(0, 10, -20)
+  lights.back.position.set(0, 10, -20);
   scene.add(lights.back);
   
   // add a light in sky
   lights.hemisphere.position.set(0, 500, 500);
   scene.add(lights.hemisphere);
   
-  //Create prisms 
-  PrismGeometry = function ( vertices, height ) {
-	var Shape = new THREE.Shape();
-	( function f( ctx ){
-	ctx.moveTo( vertices[0].x, vertices[0].y );
-	for (var i=1; i < vertices.length; i++)
-		{
-			ctx.lineTo( vertices[i].x, vertices[i].y );
-		}
-	ctx.lineTo( vertices[0].x, vertices[0].y );
-
-	} )(Shape);
-    var settings = {};
-    settings.amount = height;
-	settings.bevelEnabled = false;
-    THREE.ExtrudeGeometry.call(this, Shape, settings);
-  };
-  PrismGeometry.prototype = Object.create(THREE.ExtrudeGeometry.prototype);
+  
 
   //Make prism for player areas 
-  var geometry = new PrismGeometry( [
-    new THREE.Vector2(0, opts.court.long/3),
-    new THREE.Vector2(0, 2*opts.court.long/3),
-    new THREE.Vector2(opts.court.long/3, opts.court.long),
-    new THREE.Vector2(2*opts.court.long/3, opts.court.long),
-    new THREE.Vector2(opts.court.long, 2*opts.court.long/3),
-    new THREE.Vector2(opts.court.long, opts.court.long/3),
-    new THREE.Vector2(2*opts.court.long/3, 0),
-    new THREE.Vector2(opts.court.long/3, 0),
+  var geometry = new figs.PrismGeometry([
+    new THREE.Vector2(0, opts.court.long / 3),
+    new THREE.Vector2(0, 2 * opts.court.long / 3),
+    new THREE.Vector2(opts.court.long / 3, opts.court.long),
+    new THREE.Vector2(2 * opts.court.long / 3, opts.court.long),
+    new THREE.Vector2(opts.court.long, 2 * opts.court.long / 3),
+    new THREE.Vector2(opts.court.long, opts.court.long / 3),
+    new THREE.Vector2(2 * opts.court.long / 3, 0),
+    new THREE.Vector2(opts.court.long / 3, 0)
   ], opts.infiniteTall);
     
   //Player Area 1
   var area1 = new THREE.Mesh(geometry, materials.circuitMaterial);
-  area1.position.set(-opts.court.long/2, -opts.infiniteTall-20, -80);
+  area1.position.set(-opts.court.long / 2, -opts.infiniteTall-20, -80);
   area1.rotation.x = -Math.PI / 2;
   scene.add( area1 );
+  
   //Player Area 2
-  var area2 = new THREE.Mesh(geometry, materials.circuitMaterial);
+  var area2 = new THREE.Mesh(geometry, materials.shinyMaterial);
   area2.position.set(-opts.court.long/2, -opts.infiniteTall-20, opts.court.long+80);
   area2.rotation.x = -Math.PI / 2;
   scene.add( area2 );
@@ -162,6 +145,24 @@ define(["OrbitControls", "./opts", "./materials"], function(THREE, opts, materia
 	}
     materials.updateLava();
   }
+  
+  
+  var geometry = new THREE.SphereGeometry( 30, 32, 16 );
+	var material = new THREE.MeshLambertMaterial( { color: 0x000088 } );
+	mesh = new THREE.Mesh( geometry, material );
+	mesh.position.set(0,40,0);
+	scene.add(mesh);
+	
+	// SUPER SIMPLE GLOW EFFECT
+	// use sprite because it appears the same from all angles
+	var spriteMaterial = new THREE.SpriteMaterial( 
+	{ 
+		map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ), 
+		color: 0x0000ff, transparent: false, blending: THREE.AdditiveBlending
+	});
+	var sprite = new THREE.Sprite( spriteMaterial );
+	sprite.scale.set(200, 200, 1.0);
+	mesh.add(sprite); // this centers the glow at the mesh
   
   //Set up the sky box
   var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );	
