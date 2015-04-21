@@ -7,7 +7,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
   var skyBottom = Color("#fd951c");
   
   var vars = {
-    gravity : -1,
+    gravity : -0.5,
     friction : 1,
     force_factor : 0.2,
     ball: {
@@ -21,15 +21,20 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       y: 0,
       x_vel: 0,
       y_vel: 0,
-      dir: 0
+      dir: 0,
+      max_x: opts.court.long - opts.slimes_radius,
+      min_x: opts.court.line/2 + opts.slimes_radius,
     },
     slime2: {
       x: -600,
-      y: 0
+      y: 0,
+      x_vel: 0,
+      y_vel: 0,
+      dir: 0,
+      max_x: - opts.court.long + opts.slimes_radius,
+      min_x: - opts.court.line/2 - opts.slimes_radius,
     },
     calcs: {
-      s1_max_x: opts.court.long - opts.slimes_radius,
-      s1_min_x: opts.court.line/2 + opts.slimes_radius,
       ball_max_x: opts.court.long - opts.ball_radius,
       ball_min_x: opts.court.line/2 + opts.ball_radius,
       net_height: opts.court.net + opts.ball_radius,
@@ -47,9 +52,17 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       // alert("Connection status: Connected!")
     };
     vars.socket.onmessage = function(evt) {
-      
-      alert( "Server: " + evt.data);
-      
+      console.log( "Server: " + evt.data);
+      data = JSON.parse(evt.data);
+      if (data.type == 0){
+        vars.slime2.x_vel -= data.data;
+        vars.slime2.dir = vars.slime2.x_vel >= 0 ? 1 : -1;
+      }
+      else if (data.type == 1){
+        vars.slime2.y_vel += data.data;
+      }
+//      console.log(vars.slime1);
+//      console.log(vars.slime2);
     };
     vars.socket.onclose = function(evt) {
       alert ("Connection closed");

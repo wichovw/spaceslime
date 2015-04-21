@@ -11,10 +11,7 @@ class player():
 	def __init__(self):
 		self.x = 30
 		self.y = 0
-	
-		
-
-
+        
 class ActionHandler(tornado.websocket.WebSocketHandler): 
 	def open(self):
 		print ('user is connected.\n')
@@ -38,7 +35,7 @@ class ActionHandler(tornado.websocket.WebSocketHandler):
 			
 		#send to opponent
 		for p in players:
-			if p != self:
+#			if p != self:
 				p.write_message(message)
 
 	def on_close(self):
