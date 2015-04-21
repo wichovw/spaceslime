@@ -31,7 +31,7 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   var bumpScale   = 40.0;
 
   // use "this." to create global object
-  customUniforms = {
+  var healthyUniforms = {
       baseTexture: 	{ type: "t", value: lavaTexture },
       baseSpeed:		{ type: "f", value: baseSpeed },
       repeatS:		{ type: "f", value: repeatS },
@@ -49,17 +49,76 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   };
 
   // create custom material from the shader
-  var customMaterial = new THREE.ShaderMaterial( 
+  var healthyMaterial = new THREE.ShaderMaterial( 
   {
-      uniforms: customUniforms,
+      uniforms: healthyUniforms,
       vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
       fragmentShader: document.getElementById( 'fragmentShader' ).textContent
   }   );
   
+  
+  //Sick lava
+  // base image texture for mesh
+  var sickTexture = new THREE.ImageUtils.loadTexture( 'images/sick.jpg');
+  sickTexture.wrapS = sickTexture.wrapT = THREE.RepeatWrapping; 
+  // multiplier for distortion speed 		
+  var baseSpeed = 0.02;
+  // number of times to repeat texture in each direction
+  var repeatS = repeatT = 4.0;
+
+  // texture used to generate "randomness", distort all other textures
+  var noiseTexture = new THREE.ImageUtils.loadTexture( 'images/cloud.png' );
+  noiseTexture.wrapS = noiseTexture.wrapT = THREE.RepeatWrapping; 
+  // magnitude of noise effect
+  var noiseScale = 0.9;
+
+  // texture to additively blend with base image texture
+  var blendTexture = new THREE.ImageUtils.loadTexture( 'images/sick.jpg' );
+  blendTexture.wrapS = blendTexture.wrapT = THREE.RepeatWrapping; 
+  // multiplier for distortion speed 
+  var blendSpeed = 0.04;
+  // adjust lightness/darkness of blended texture
+  var blendOffset = 0.25;
+
+  // texture to determine normal displacement
+  var bumpTexture = noiseTexture;
+  bumpTexture.wrapS = bumpTexture.wrapT = THREE.RepeatWrapping; 
+  // multiplier for distortion speed 		
+  var bumpSpeed   = 0.30;
+  // magnitude of normal displacement
+  var bumpScale   = 40.0;
+
+  var sickUniforms = {
+      baseTexture: 	{ type: "t", value: sickTexture },
+      baseSpeed:		{ type: "f", value: baseSpeed },
+      repeatS:		{ type: "f", value: repeatS },
+      repeatT:		{ type: "f", value: repeatT },
+      noiseTexture:	{ type: "t", value: noiseTexture },
+      noiseScale:		{ type: "f", value: noiseScale },
+      blendTexture:	{ type: "t", value: blendTexture },
+      blendSpeed: 	{ type: "f", value: blendSpeed },
+      blendOffset: 	{ type: "f", value: blendOffset },
+      bumpTexture:	{ type: "t", value: bumpTexture },
+      bumpSpeed: 		{ type: "f", value: bumpSpeed },
+      bumpScale: 		{ type: "f", value: bumpScale },
+      alpha: 			{ type: "f", value: 1.0 },
+      time: 			{ type: "f", value: 1.0 }
+  };
+  
+  // create custom material from the shader
+  var sickMaterial = new THREE.ShaderMaterial( 
+  {
+      uniforms: sickUniforms,
+      vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+      fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+  }   );
+  
+  
   var clock = new THREE.Clock();
   function updateLava(){
     var delta = clock.getDelta();
-	customUniforms.time.value += delta;
+	healthyUniforms.time.value += delta;
+	sickUniforms.time.value += delta;
   }
   
   //Build circuit material
@@ -76,5 +135,5 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   //Glass material
   var glassMaterial = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
   
-  return {lavaMaterial:  customMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial, shinyMaterial: shinyMaterial};
+  return {lavaMaterial:  healthyMaterial, sickMaterial: sickMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial, shinyMaterial: shinyMaterial};
 });

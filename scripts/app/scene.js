@@ -3,7 +3,6 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
   //Set up scene
   scene = new THREE.Scene();
   
-
   //Set up renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -76,12 +75,13 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
   //Set up slimes
   var geometry = new THREE.SphereGeometry(opts.slimes_radius, 15, 15, 0, Math.PI, 0, Math.PI);
   var slime1 = new THREE.Mesh( geometry, materials.lavaMaterial );
-  var slime2 = new THREE.Mesh( geometry, materials.lavaMaterial );
   slime1.position.z = -600;
-  slime2.position.z = 600;
   slime1.rotation.x = -Math.PI/2;
-  slime2.rotation.x = -Math.PI/2;
   scene.add( slime1 );
+  
+  var slime2 = new THREE.Mesh( geometry, materials.lavaMaterial );
+  slime2.position.z = 600;
+  slime2.rotation.x = -Math.PI/2;
   scene.add( slime2 );
   
   //Add Slime bottom parts
@@ -146,23 +146,27 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
     materials.updateLava();
   }
   
+  //Create shield item icon
+  var sphereItem = new THREE.SphereGeometry( 30, 32, 16 );
+  var material = new THREE.MeshPhongMaterial( { color: 0xe0c42c  } );
+  var itemShield = new THREE.Mesh( sphereItem, material );
+  itemShield.position.set(0,500,0);
+  scene.add(itemShield);
+
+  // SUPER SIMPLE GLOW EFFECT
+  // use sprite because it appears the same from all angles
+  var spriteMaterial = new THREE.SpriteMaterial({ 
+      map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ), 
+      color: 0xe0c42c, transparent: false, blending: THREE.AdditiveBlending
+  });
+  var sprite = new THREE.Sprite( spriteMaterial );
+  sprite.scale.set(200, 200, 1.0);
+  itemShield.add(sprite); // this centers the glow at the mesh
   
-  var geometry = new THREE.SphereGeometry( 30, 32, 16 );
-	var material = new THREE.MeshLambertMaterial( { color: 0x000088 } );
-	mesh = new THREE.Mesh( geometry, material );
-	mesh.position.set(0,40,0);
-	scene.add(mesh);
-	
-	// SUPER SIMPLE GLOW EFFECT
-	// use sprite because it appears the same from all angles
-	var spriteMaterial = new THREE.SpriteMaterial( 
-	{ 
-		map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ), 
-		color: 0x0000ff, transparent: false, blending: THREE.AdditiveBlending
-	});
-	var sprite = new THREE.Sprite( spriteMaterial );
-	sprite.scale.set(200, 200, 1.0);
-	mesh.add(sprite); // this centers the glow at the mesh
+  //Create sick icon
+  var sickItem = new THREE.Mesh(sphereItem, materials.sickMaterial);
+  sickItem.position.set(0, 700, 0);
+  scene.add(sickItem);
   
   //Set up the sky box
   var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );	
@@ -177,5 +181,5 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
   scene.add( skyBox );
     
-  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox};
+  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox, "itemShield" : itemShield};
 });
