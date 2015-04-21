@@ -28,6 +28,11 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 			shield: 0,
       max_x: opts.court.long - opts.slimes_radius,
       min_x: opts.court.line/2 + opts.slimes_radius,
+      powerups: {
+        shield: true,
+        sick: false,
+        extra: true
+      }
     },
     slime2: {
       x: -600,
@@ -39,6 +44,11 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 			shield: 1,
       max_x: - opts.court.long + opts.slimes_radius,
       min_x: - opts.court.line/2 - opts.slimes_radius,
+      powerups: {
+        shield: true,
+        sick: false,
+        extra: true
+      }
     },
     calcs: {
       ball_max_x: opts.court.long - opts.ball_radius,
@@ -48,7 +58,6 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       ball_r2: Math.pow(opts.ball_radius, 2),
       collide_d2: 0
     }
-		
   }
   vars.calcs.collide_d2 = vars.calcs.ball_r2 + vars.calcs.slime_r2;
   console.log(vars);
