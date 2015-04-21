@@ -61,6 +61,12 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       else if (data.type == 1){
         vars.slime2.y_vel += data.data;
       }
+      else if (data.type == 2){
+        vars.ball.x = data.x;
+        vars.ball.y = data.y;
+        vars.ball.x_vel = data.x_vel;
+        vars.ball.y_vel = data.y_vel;
+      }
 //      console.log(vars.slime1);
 //      console.log(vars.slime2);
     };
