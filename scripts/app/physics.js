@@ -36,7 +36,15 @@ define(['./variables', './opts'], function (vars, opts) {
         if (vars.ball.y >= opts.court.net) vars.ball.y_vel = Math.abs(vars.ball.y_vel);
         if (abs_ball_x >= opts.court.line) vars.ball.x_vel *= -1;
       }
-      if (vars.ball.y <= opts.ball_radius) vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
+      if (vars.ball.y <= opts.ball_radius){ 
+				vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
+				if(vars.ball.x<0)
+					vars.slime1.score++;
+				else
+					vars.slime2.score++;
+				// alert(vars.slime1.score+"-"+vars.slime2.score);
+				resetGame();
+			}
     },
     renderObject: function renderObject(obj, logical) {
       obj.position.z = logical.x;

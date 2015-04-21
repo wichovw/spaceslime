@@ -22,6 +22,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       x_vel: 0,
       y_vel: 0,
       dir: 0,
+			score:0,
       max_x: opts.court.long - opts.slimes_radius,
       min_x: opts.court.line/2 + opts.slimes_radius,
     },
@@ -31,6 +32,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       x_vel: 0,
       y_vel: 0,
       dir: 0,
+			score:0,
       max_x: - opts.court.long + opts.slimes_radius,
       min_x: - opts.court.line/2 - opts.slimes_radius,
     },
@@ -80,6 +82,29 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 //  }, 3000);
   
 
-  
+ resetGame = function(){
+			vars.gravity = -0.5;
+			vars.friction = 1;
+			vars.force_factor = 0.2;
+			
+				vars.ball.x= 600;
+				vars.ball.y= 800;
+				vars.ball.x_vel= 0;
+				vars.ball.y_vel= 0;
+			
+			
+				vars.slime1.x= 600;
+				vars.slime1.y= 0;
+				vars.slime1.x_vel= 0;
+				vars.slime1.y_vel= 0;
+				vars.slime1.dir= 0;
+			
+			vars.slime2.x= -600;
+				vars.slime2.y= 0;
+				vars.slime2.x_vel= 0;
+				vars.slime2.y_vel= 0;
+				vars.slime2.dir= 0;
+		
+ }
   return vars;
 });
