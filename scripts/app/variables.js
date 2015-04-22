@@ -1,4 +1,4 @@
-define(['./opts', './utils', 'color'], function(opts, utils, Color){
+define(['./opts', './utils', 'color','./scene'], function(opts, utils, Color,scene){
   
   //We'll use websockets here to construct and object
   
@@ -25,13 +25,12 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       y_vel: 0,
       dir: 0,
 			score:0,
-			shield: 0,
       max_x: opts.court.long - opts.slimes_radius,
       min_x: opts.court.line/2 + opts.slimes_radius,
       powerups: {
-        shield: true,
+        shield: false,
         sick: false,
-        extra: true
+        extra: false
       }
     },
     slime2: {
@@ -41,13 +40,12 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       y_vel: 0,
       dir: 0,
 			score:0,
-			shield: 1,
       max_x: - opts.court.long + opts.slimes_radius,
       min_x: - opts.court.line/2 - opts.slimes_radius,
       powerups: {
-        shield: true,
+        shield: false,
         sick: false,
-        extra: true
+        extra: false
       }
     },
     calcs: {
@@ -56,16 +54,23 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       net_height: opts.court.net + opts.ball_radius,
       slime_r2: Math.pow(opts.slimes_radius, 2),
       ball_r2: Math.pow(opts.ball_radius, 2),
-      collide_d2: 0
-    }
+      collide_d2: 0,
+      powerup_d2: 0
+    },
+		powerupo: {
+			x: 0,
+			y: 500
+		}
   }
   vars.calcs.collide_d2 = vars.calcs.ball_r2 + vars.calcs.slime_r2;
+  vars.calcs.powerup_d2 = vars.calcs.ball_r2 + 30;
   console.log(vars);
 	
   vars.socket = new WebSocket(opts.socketurl);
 	vars.socket.onopen = function(evt) {
       // alert("Connection status: Connected!")
     };
+		
     vars.socket.onmessage = function(evt) {
       console.log( "Server: " + evt.data);
       data = JSON.parse(evt.data);
@@ -76,6 +81,13 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       else if (data.type == 1){
         vars.slime2.y_vel += data.data;
       }
+			else if(data.type == 9 ){
+				if(vars.powerup==0){//check if there is already a power in the game
+					
+					showPowerup(data.data,0,500);
+					vars.powerup = data.data;
+				} 
+			}
 //      console.log(vars.slime1);
 //      console.log(vars.slime2);
     };
@@ -120,12 +132,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 		
  }
  
-	showPowerup = function(){
-		if(vars.powerup==0){
-			vars.powerup = Math.floor((Math.random() * 3)+1); //Number 1 - 3
-		}
-		
-	}
+
 	
 	
   return vars;

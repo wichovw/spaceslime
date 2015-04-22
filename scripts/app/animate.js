@@ -17,7 +17,7 @@ define(['OrbitControls', './scene', './physics', './variables', './materials'], 
       scene.slime1.material = materials.sickMaterial;
     }
          
-
+		
     
     physics.toDoEachFrame(scene.ball, scene.slime2, scene.slime1);
     scene.sky.rotation.y += 0.0003;

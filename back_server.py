@@ -3,7 +3,35 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import json
+import random
+import threading
+import time
 
+
+#thread to periodically execute a function. Obtained from http://stackoverflow.com/questions/5179467/equivalent-of-setinterval-in-python
+def setInterval(interval, times = -1):
+    # This will be the actual decorator,
+    # with fixed interval and times parameter
+	def outer_wrap(function):
+			# This will be the function to be
+			# called
+		def wrap(*args, **kwargs):
+			stop = threading.Event()
+
+			# This is another function to be executed
+			# in a different thread to simulate setInterval
+			def inner_wrap():
+				i = 0
+				while i != times and not stop.isSet():
+					stop.wait(interval)
+					function(*args, **kwargs)
+					i += 1
+			t = threading.Timer(0, inner_wrap)
+			t.daemon = True
+			t.start()
+			return stop
+		return wrap
+	return outer_wrap
 
 players = []
 
@@ -11,12 +39,25 @@ class player():
 	def __init__(self):
 		self.x = 30
 		self.y = 0
-        
+
+stopper = None		
 class ActionHandler(tornado.websocket.WebSocketHandler): 
+
+
+	@setInterval(5,999)
+	def powerup(self):
+		for p in players:
+			p.write_message('{"type":9,"data":%d}' %random.randint(1,3))
+	
 	def open(self):
 		print ('user is connected.\n')
 		self.player = player()
 		players.append(self)
+		
+		if(len(players)==2):
+			self.powerup()
+			
+
 		
 
 	"""
@@ -32,7 +73,8 @@ class ActionHandler(tornado.websocket.WebSocketHandler):
 		elif(msg['type']==1):
 			print ('Vertical: %s\n' %msg['data'])
 			self.player.y+=msg['data']
-			
+		
+		
 		#send to opponent
 		for p in players:
 #			if p != self:

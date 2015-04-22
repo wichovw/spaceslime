@@ -58,6 +58,11 @@ define(['./variables', './opts'], function (vars, opts) {
 				// alert(vars.slime1.score+"-"+vars.slime2.score);
 				
 			}
+			
+			d2 = Math.pow(vars.ball.x - vars.powerupo.x, 2) + Math.pow(vars.ball.y - vars.powerupo.y, 2);
+      if (d2 <= vars.calcs.powerup_d2) {
+        
+      }
     },
     renderObject: function renderObject(obj, logical) {
       obj.position.z = logical.x;
