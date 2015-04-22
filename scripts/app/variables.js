@@ -85,6 +85,11 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
         vars.gravity = -0.5;
         vars.playing = true;
       }
+      else if (data.type == 5){
+        vars.ball.x_vel = 0;
+        vars.ball.x = data.point;
+        resetGame(false);
+      }
       else if (data.type == 1){
         vars.slime2.x = -data.x;
         vars.slime2.y = data.y;
@@ -117,12 +122,24 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
 //  }, 3000);
   
 
- resetGame = function(){
+ resetGame = function(won){
 		vars.gravity = -0.5;
 		vars.friction = 1;
 		vars.force_factor = 0.2;
-	
-		vars.ball.x= 600;
+   
+        var point = vars.ball.x > 0 ? -1 : 1;
+//        if (point == 1){
+//          alert("GANASTE!");
+//        }
+//        if (point == -1){
+//          alert("PERDISTE, MULA!");
+//        }
+   
+        if (won){
+          vars.socket.send(JSON.stringify({type:5, point:point}));
+        }
+   
+		vars.ball.x= 600*point;
 		vars.ball.y= 800;
 		vars.ball.x_vel= 0;
 		vars.ball.y_vel= 0;
