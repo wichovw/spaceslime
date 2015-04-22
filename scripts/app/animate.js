@@ -16,6 +16,17 @@ define(['OrbitControls', './scene', './physics', './variables', './materials'], 
     if(vars.slime2.powerups.sick){
       scene.slime1.material = materials.sickMaterial;
     }
+    //Check shields
+    if(vars.slime1.powerups.shield){
+      scene.shield2.material = materials.shieldMaterial;
+    } else {
+      scene.shield2.material = materials.invisibleMaterial;
+    }
+    if(vars.slime2.powerups.shield){
+      scene.shield1.material = materials.shieldMaterial;
+    } else {
+      scene.shield1.material = materials.invisibleMaterial;
+    }
          
 
     

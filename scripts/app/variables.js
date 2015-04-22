@@ -27,7 +27,7 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       max_x: opts.court.long - opts.slimes_radius,
       min_x: opts.court.line/2 + opts.slimes_radius,
       powerups: {
-        shield: true,
+        shield: false,
         sick: false,
         extra: true
       }
@@ -43,8 +43,8 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
       max_x: - opts.court.long + opts.slimes_radius,
       min_x: - opts.court.line/2 - opts.slimes_radius,
       powerups: {
-        shield: true,
-        sick: false,
+        shield: false,
+        sick: true,
         extra: true
       }
     },

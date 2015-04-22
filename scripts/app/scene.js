@@ -43,7 +43,7 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
   
 
   //Make prism for player areas 
-  var geometry = new figs.PrismGeometry([
+  var prismgeometry = new figs.PrismGeometry([
     new THREE.Vector2(0, opts.court.long / 3),
     new THREE.Vector2(0, 2 * opts.court.long / 3),
     new THREE.Vector2(opts.court.long / 3, opts.court.long),
@@ -53,18 +53,39 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
     new THREE.Vector2(2 * opts.court.long / 3, 0),
     new THREE.Vector2(opts.court.long / 3, 0)
   ], opts.infiniteTall);
+  
+  var shieldgeometry = new figs.PrismGeometry([
+    new THREE.Vector2(0, opts.court.long / 3),
+    new THREE.Vector2(0, 2 * opts.court.long / 3),
+    new THREE.Vector2(opts.court.long / 3, opts.court.long),
+    new THREE.Vector2(2 * opts.court.long / 3, opts.court.long),
+    new THREE.Vector2(opts.court.long, 2 * opts.court.long / 3),
+    new THREE.Vector2(opts.court.long, opts.court.long / 3),
+    new THREE.Vector2(2 * opts.court.long / 3, 0),
+    new THREE.Vector2(opts.court.long / 3, 0)
+  ], 10);
     
   //Player Area 1
-  var area1 = new THREE.Mesh(geometry, materials.circuitMaterial);
+  var area1 = new THREE.Mesh(prismgeometry, materials.circuitMaterial);
   area1.position.set(-opts.court.long / 2, -opts.infiniteTall-20, -80);
   area1.rotation.x = -Math.PI / 2;
   scene.add( area1 );
   
+  var shield1 = new THREE.Mesh(shieldgeometry, materials.shieldMaterial);
+  shield1.position.set(-opts.court.long/2, -5, -80);
+  shield1.rotation.x = -Math.PI / 2;
+  scene.add(shield1);
+  
   //Player Area 2
-  var area2 = new THREE.Mesh(geometry, materials.shinyMaterial);
+  var area2 = new THREE.Mesh(prismgeometry, materials.shinyMaterial);
   area2.position.set(-opts.court.long/2, -opts.infiniteTall-20, opts.court.long+80);
   area2.rotation.x = -Math.PI / 2;
   scene.add( area2 );
+  
+  var shield2 = new THREE.Mesh(shieldgeometry, materials.shieldMaterial);
+  shield2.position.set(-opts.court.long/2, -5, opts.court.long+80);
+  shield2.rotation.x = -Math.PI / 2;
+  scene.add(shield2);
 
   //Set up net
   var geometry = new THREE.BoxGeometry(opts.court.wide, (opts.infiniteTall), opts.court.line);
@@ -181,5 +202,5 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
   scene.add( skyBox );
     
-  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox, "itemShield" : itemShield};
+  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "shield1" : shield1, "shield2" : shield2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox, "itemShield" : itemShield, "sickItem" : sickItem};
 });

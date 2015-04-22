@@ -132,8 +132,10 @@ define(['OrbitControls', './opts'], function(THREE, opts){
   //Invisible material
   var invisibleMaterial = new THREE.MeshPhongMaterial({color: 0xfff, transparent: true, opacity: 0.0});
   
-  //Glass material
-  var glassMaterial = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5});
+  var shieldMaterial = new THREE.MeshPhongMaterial({color: 0xe0c42c, transparent: true, opacity: 0.8});
   
-  return {lavaMaterial:  healthyMaterial, sickMaterial: sickMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial, shinyMaterial: shinyMaterial};
+  //Glass material
+  var glassMaterial = new THREE.MeshPhongMaterial({color: 0xddddff, transparent: true, opacity: 0.5, specular: 0x77bef2, shininess: 70});
+  
+  return {lavaMaterial:  healthyMaterial, sickMaterial: sickMaterial, updateLava: updateLava, circuitMaterial: circuitMaterial, invisibleMaterial: invisibleMaterial, glassMaterial: glassMaterial, shinyMaterial: shinyMaterial, shieldMaterial: shieldMaterial};
 });
