@@ -15,7 +15,7 @@ define({
   ball_radius: 50,
   slime_max_jump: 400,
   // web socket
-  socketurl: 'ws://localhost:9999/ws',
+  socketurl: 'ws://172.20.11.29:9999/ws',
   skybox: {
     prefix: "images/mainframe_",
     extension: ".jpg",
