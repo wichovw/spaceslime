@@ -7,7 +7,9 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
   var skyBottom = Color("#fd951c");
   
   var vars = {
-    gravity : -0.5,
+    playerNo : 0,
+    playing: false,
+    gravity : 0,
     friction : 1,
     force_factor : 0.2,
     ball: {
@@ -54,17 +56,31 @@ define(['./opts', './utils', 'color'], function(opts, utils, Color){
     vars.socket.onmessage = function(evt) {
       console.log( "Server: " + evt.data);
       data = JSON.parse(evt.data);
-      if (data.type == 0){
-        vars.slime2.x_vel -= data.data;
-        vars.slime2.dir = vars.slime2.x_vel >= 0 ? 1 : -1;
+      if (data.type == 3){
+        // joined game
+        if (data.players == 2)
+          vars.ball.x = -600;
+        else if (data.players > 2){
+          alert("Sólo pueden jugar dos");
+          vars.gravity = -0.5;
+        }
+      }
+      else if (data.type == 4){
+        // game start
+        vars.gravity = -0.5;
+        vars.playing = true;
       }
       else if (data.type == 1){
-        vars.slime2.y_vel += data.data;
+        vars.slime2.x = -data.x;
+        vars.slime2.y = data.y;
+        vars.slime2.x_vel = -data.x_vel;
+        vars.slime2.y_vel = data.y_vel;
+        vars.slime2.dir = vars.slime2.x_vel >= 0 ? 1 : -1;
       }
       else if (data.type == 2){
-        vars.ball.x = data.x;
+        vars.ball.x = -data.x;
         vars.ball.y = data.y;
-        vars.ball.x_vel = data.x_vel;
+        vars.ball.x_vel = -data.x_vel;
         vars.ball.y_vel = data.y_vel;
       }
 //      console.log(vars.slime1);

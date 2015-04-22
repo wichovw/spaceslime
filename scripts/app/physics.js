@@ -29,14 +29,24 @@ define(['./variables', './opts'], function (vars, opts) {
       if (d2 <= vars.calcs.collide_d2) {
         vars.ball.x_vel = (vars.ball.x - vars.slime1.x) * vars.force_factor;
         vars.ball.y_vel = (vars.ball.y - vars.slime1.y + vars.slime1.y_vel) * vars.force_factor;
+        vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
       }
-      var abs_ball_x = Math.abs(vars.ball.x);
-      if (abs_ball_x >= vars.calcs.ball_max_x) vars.ball.x_vel *= -1;
-      else if (vars.ball.y <= vars.calcs.net_height && abs_ball_x <= vars.calcs.ball_min_x){
-        if (vars.ball.y >= opts.court.net) vars.ball.y_vel = Math.abs(vars.ball.y_vel);
-        if (abs_ball_x >= opts.court.line) vars.ball.x_vel *= -1;
+      if (vars.ball.x > 0) {
+        if (vars.ball.x >= vars.calcs.ball_max_x){
+          vars.ball.x_vel *= -1;
+          vars.ball.x = vars.calcs.ball_max_x;
+          vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
+        }
+        else if (vars.ball.y <= vars.calcs.net_height && vars.ball.x <= vars.calcs.ball_min_x){
+          if (vars.ball.y >= opts.court.net) vars.ball.y_vel = Math.abs(vars.ball.y_vel);
+          if (vars.ball.x >= opts.court.line) vars.ball.x_vel *= -1;
+          vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
+        }
+        if (vars.ball.y <= opts.ball_radius){
+          vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
+          vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
+        }
       }
-      if (vars.ball.y <= opts.ball_radius) vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
     },
     renderObject: function renderObject(obj, logical) {
       obj.position.z = logical.x;

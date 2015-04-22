@@ -17,4 +17,5 @@ config={
 			},
 }
 
+cherrypy.server.socket_host = '172.20.11.29'
 cherrypy.quickstart(Root(),'/',config)
