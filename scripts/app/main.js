@@ -32,6 +32,8 @@ define(['./animate', './variables', 'jquery', './opts'], function (animation, va
     e.preventDefault();
   });
   
+	window.setInterval(showPowerup(),5000);
+	
   //Run animate
   animation.animate();
   
