@@ -25,6 +25,12 @@ define(['./animate', './variables', 'jquery', './opts'], function (animation, va
   
 	
 	
+  //Play soundtrack
+  var soundtrack = document.createElement('audio');
+  soundtrack.setAttribute('src', 'images/soundtrack.mp3');
+  soundtrack.setAttribute('loop', 'true');
+  soundtrack.play();
+  
   //Run animate
   animation.animate();
   
