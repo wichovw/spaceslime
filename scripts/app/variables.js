@@ -18,7 +18,7 @@ define(['./opts', './utils', 'color','./scene'], function(opts, utils, Color,sce
       y: 800,
       x_vel: 0,
       y_vel: 0,
-			touched_by: 1
+      touched_by: 0
     },
     slime1: {
       x: 600,
@@ -66,7 +66,7 @@ define(['./opts', './utils', 'color','./scene'], function(opts, utils, Color,sce
 		}
   }
   vars.calcs.collide_d2 = vars.calcs.ball_r2 + vars.calcs.slime_r2;
-  vars.calcs.powerup_d2 = vars.calcs.ball_r2 + 30;
+  vars.calcs.powerup_d2 = vars.calcs.ball_r2 + 50;
   console.log(vars);
 	
   vars.socket = new WebSocket(opts.socketurl);
@@ -103,19 +103,26 @@ define(['./opts', './utils', 'color','./scene'], function(opts, utils, Color,sce
         vars.slime2.y_vel = data.y_vel;
         vars.slime2.dir = vars.slime2.x_vel >= 0 ? 1 : -1;
       }
-      else if (data.type == 2){
+      else if (data.type == 2 || data.type == 0){
         vars.ball.x = -data.x;
         vars.ball.y = data.y;
         vars.ball.x_vel = -data.x_vel;
         vars.ball.y_vel = data.y_vel;
+        if(data.type==0)
+          vars.ball.touched_by = -1;
       }
 			else if(data.type == 9 ){
 				if(vars.powerup==0){//check if there is already a power in the game
 					
-					showPowerup(data.data,0,500);
+					scene.showPowerup(data.data,0,500);
 					vars.powerup = data.data;
 				} 
 			}
+      else if (data.type == 8){
+        if (data.data == 1)
+          vars.slime2.powerups.shield = true;
+        vars.powerup = 0;
+      }
 //      console.log(vars.slime1);
 //      console.log(vars.slime2);
     };

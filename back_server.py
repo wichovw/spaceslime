@@ -49,16 +49,14 @@ class player():
 		self.x = 30
 		self.y = 0
 
-stopper = None		
-
-
+powerup = 1
     
 class ActionHandler(tornado.websocket.WebSocketHandler): 
 
 	@setInterval(5,999)
 	def powerup(self):
 		for p in players:
-			p.write_message('{"type":9,"data":%d}' %random.randint(1,3))
+			p.write_message('{"type":9,"data":%d}' % powerup)
 	
 		
 			
@@ -83,6 +81,8 @@ class ActionHandler(tornado.websocket.WebSocketHandler):
         
 	def on_message(self, message):
 		msg = json.loads(message)
+		if msg['type']==8:
+			powerup = random.randint(1,3)
 #        if(msg['type']==0):
 #            print ('Hotizontal: %s\n' %msg['data'])
 #            self.player.x_vel+=msg['data']

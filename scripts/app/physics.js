@@ -1,4 +1,4 @@
-define(['./variables', './opts'], function (vars, opts) {
+define(['./variables', './opts', './scene'], function (vars, opts, scene) {
   //A set of methods to control position
   return {
     changeBallPosition : function changeBallPosition() {
@@ -29,13 +29,14 @@ define(['./variables', './opts'], function (vars, opts) {
       if (d2 <= vars.calcs.collide_d2) {
         vars.ball.x_vel = (vars.ball.x - vars.slime1.x) * vars.force_factor;
         vars.ball.y_vel = (vars.ball.y - vars.slime1.y + vars.slime1.y_vel) * vars.force_factor;
+        vars.ball.touched_by = 1;
         vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
       }
       if (vars.ball.x > 0) {
         if (vars.ball.x >= vars.calcs.ball_max_x){
           vars.ball.x_vel *= -1;
           vars.ball.x = vars.calcs.ball_max_x;
-          vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
+          vars.socket.send(JSON.stringify({type:0, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
         }
         else if (vars.ball.y <= vars.calcs.net_height && vars.ball.x <= vars.calcs.ball_min_x){
           if (vars.ball.y >= opts.court.net) vars.ball.y_vel = Math.abs(vars.ball.y_vel);
@@ -50,16 +51,16 @@ define(['./variables', './opts'], function (vars, opts) {
       if (vars.ball.y <= opts.ball_radius && vars.ball.x > 0){ 
 				vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
 				if(vars.ball.x<0){
-					if(vars.slime2.shield>0)//if has powerup shield
-						vars.slime2.shield--;
+					if(vars.slime2.powerups.shield)//if has powerup shield
+						vars.slime2.powerups.shield=false;
 					else{
 						vars.slime1.score++;
 						resetGame(true);
 					}
 				}
 				else{
-					if(vars.slime1.shield>0)//if has powerup shield
-						vars.slime1.shield--;
+					if(vars.slime1.powerups.shield)//if has powerup shield
+						vars.slime1.powerups.shield = true;
 					else{
 						vars.slime2.score++;
 						resetGame(true);
@@ -71,8 +72,15 @@ define(['./variables', './opts'], function (vars, opts) {
 			}
 			
 			d2 = Math.pow(vars.ball.x - vars.powerupo.x, 2) + Math.pow(vars.ball.y - vars.powerupo.y, 2);
-      if (d2 <= vars.calcs.powerup_d2) {
-        
+      if (d2 <= vars.calcs.powerup_d2 && vars.ball.touched_by == 1) {
+//        alert(vars.powerup);
+//        alert(vars.ball.touched_by);
+        if(vars.powerup == 1){
+          vars.slime1.powerups.shield = true;
+          vars.socket.send(JSON.stringify({type:8, data:1}));
+        }
+        vars.powerup = 0;
+        scene.removePowerup();
       }
     },
     renderObject: function renderObject(obj, logical) {

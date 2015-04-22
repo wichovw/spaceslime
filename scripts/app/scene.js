@@ -171,33 +171,39 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
 	
 	var sphereItem = new THREE.SphereGeometry( 30, 32, 16 );
 	var material = new THREE.MeshPhongMaterial( { color: 0xe0c42c  } );
-	
+	var itemShield = new THREE.Mesh( sphereItem, material );
+    scene.add(itemShield);				
+    // SUPER SIMPLE GLOW EFFECT
+    // use sprite because it appears the same from all angles
+    var spriteMaterial = new THREE.SpriteMaterial({ 
+            map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ), 
+            color: 0xe0c42c, transparent: false, blending: THREE.AdditiveBlending
+    });
+    var sprite = new THREE.Sprite( spriteMaterial );
+    sprite.scale.set(200, 200, 1.0);
+    itemShield.add(sprite); // this centers the glow at the mesh
+    var sickItem = new THREE.Mesh(sphereItem, materials.sickMaterial);
+    scene.add(sickItem);
+  
+  
 	showPowerup = function(powerup,x,y){
 			if(powerup==1){
 				//Create shield item icon
-				var itemShield = new THREE.Mesh( sphereItem, material );
+				
 				itemShield.position.set(0,y,0);
-				scene.add(itemShield);				
-				// SUPER SIMPLE GLOW EFFECT
-				// use sprite because it appears the same from all angles
-				var spriteMaterial = new THREE.SpriteMaterial({ 
-						map: new THREE.ImageUtils.loadTexture( 'images/glow.png' ), 
-						color: 0xe0c42c, transparent: false, blending: THREE.AdditiveBlending
-				});
-				var sprite = new THREE.Sprite( spriteMaterial );
-				sprite.scale.set(200, 200, 1.0);
-				itemShield.add(sprite); // this centers the glow at the mesh
+				
 		}else if(powerup>0){
 			//Create sick icon
-			var sickItem = new THREE.Mesh(sphereItem, materials.sickMaterial);
+			
 			sickItem.position.set(0, y, 0);
-			scene.add(sickItem);
 		}
 	}	
 	
 
-  
-
+  removePowerup = function(){
+    itemShield.position.y = -4000;
+    sphereItem.position.y = -4000;
+  }
   
   //Set up the sky box
   var skyGeometry = new THREE.BoxGeometry( 5000, 5000, 5000 );	
@@ -215,5 +221,5 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
 
   
 
-  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "shield1" : shield1, "shield2" : shield2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox};
+  return {"renderer": renderer, "camera" : camera, "scene" : scene, "slime1" : slime1, "slime2" : slime2, "shield1" : shield1, "shield2" : shield2, "ball" : ball, "animateBallParticles": animateBallParticles, "sky" : skyBox, "showPowerup" : showPowerup, "removePowerup" : removePowerup};
 });
