@@ -185,6 +185,8 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
     var sickItem = new THREE.Mesh(sphereItem, materials.sickMaterial);
     scene.add(sickItem);
   
+    itemShield.position.set(0,-1000,0);
+    sickItem.position.set(0,-1000,0);
   
 	showPowerup = function(powerup,x,y){
 			if(powerup==1){
@@ -201,8 +203,8 @@ define(["OrbitControls", "./opts", "./materials", "./figures"], function (THREE,
 	
 
   removePowerup = function(){
-    itemShield.position.y = -4000;
-    sphereItem.position.y = -4000;
+    itemShield.position.set(0,-1000,0);
+    sickItem.position.set(0,-1000,0);
   }
   
   //Set up the sky box

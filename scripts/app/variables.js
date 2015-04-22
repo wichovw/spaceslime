@@ -122,7 +122,12 @@ define(['./opts', './utils', 'color','./scene'], function(opts, utils, Color,sce
         if (data.data == 1)
           vars.slime2.powerups.shield = true;
         vars.powerup = 0;
+        scene.removePowerup();
       }
+		else if (data.type == 10){
+			if (data.data == 1)
+				vars.slime2.powerups.shield = false;
+		}
 //      console.log(vars.slime1);
 //      console.log(vars.slime2);
     };

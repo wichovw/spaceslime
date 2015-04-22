@@ -59,8 +59,10 @@ define(['./variables', './opts', './scene'], function (vars, opts, scene) {
 					}
 				}
 				else{
-					if(vars.slime1.powerups.shield)//if has powerup shield
-						vars.slime1.powerups.shield = true;
+					if(vars.slime1.powerups.shield){//if has powerup shield
+						vars.slime1.powerups.shield = false;
+						vars.socket.send(JSON.stringify({type:10,data:1}));
+					}
 					else{
 						vars.slime2.score++;
 						resetGame(true);
@@ -77,8 +79,8 @@ define(['./variables', './opts', './scene'], function (vars, opts, scene) {
 //        alert(vars.ball.touched_by);
         if(vars.powerup == 1){
           vars.slime1.powerups.shield = true;
-          vars.socket.send(JSON.stringify({type:8, data:1}));
         }
+        vars.socket.send(JSON.stringify({type:8, data:vars.powerup}));
         vars.powerup = 0;
         scene.removePowerup();
       }
