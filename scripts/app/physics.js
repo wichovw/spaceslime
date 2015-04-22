@@ -47,6 +47,28 @@ define(['./variables', './opts'], function (vars, opts) {
           vars.socket.send(JSON.stringify({type:2, x:vars.ball.x, y:vars.ball.y, x_vel:vars.ball.x_vel, y_vel:vars.ball.y_vel}));
         }
       }
+      if (vars.ball.y <= opts.ball_radius){ 
+				vars.ball.y_vel = Math.abs(vars.ball.y_vel)*0.9;
+				if(vars.ball.x<0){
+					if(vars.slime2.shield>0)//if has powerup shield
+						vars.slime2.shield--;
+					else{
+						vars.slime1.score++;
+						resetGame();
+					}
+				}
+				else{
+					if(vars.slime1.shield>0)//if has powerup shield
+						vars.slime1.shield--;
+					else{
+						vars.slime2.score++;
+						resetGame();
+					}
+				}
+					
+				// alert(vars.slime1.score+"-"+vars.slime2.score);
+				
+			}
     },
     renderObject: function renderObject(obj, logical) {
       obj.position.z = logical.x;
